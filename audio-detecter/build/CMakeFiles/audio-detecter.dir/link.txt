@@ -1,0 +1,1 @@
+/usr/bin/c++     -std=c++11    CMakeFiles/audio-detecter.dir/src/Pulse.cpp.o CMakeFiles/audio-detecter.dir/src/Alsa.cpp.o CMakeFiles/audio-detecter.dir/src/main.cpp.o  -o audio-detecter -rdynamic -lglib-2.0 -lpulse -lasound 

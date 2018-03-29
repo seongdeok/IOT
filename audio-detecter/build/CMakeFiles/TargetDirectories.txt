@@ -1,0 +1,1 @@
+/home/duk0669/audio-detecter/build/CMakeFiles/audio-detecter.dir
