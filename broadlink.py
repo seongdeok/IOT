@@ -16,7 +16,7 @@ volume_down = b"&\x00\xd8\x00\x00\x01'\x93\x14\x11\x137\x13\x11\x14\x11\x146\x14
 # Long press again until blue LED is blinking slowly.
 # and then connect WIFI BROADLINK AP before setup()
 def setup():
-    broadlink.setup('U+Net8B04', 'DD4F030395',3)
+    broadlink.setup('AP', 'PASSWD',3)
 
 
 #device = broadlink.hello('192.168.219.115')
