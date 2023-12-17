@@ -1,0 +1,10 @@
+[Unit]
+Description=Audio Detect Service
+
+[Service]
+# Command to execute when the service is started
+ExecStart=/usr/bin/python3 /home/duk0669/IOT/audio_mqtt_publisher.py
+User=duk0669
+
+[Install]
+WantedBy=default.target
