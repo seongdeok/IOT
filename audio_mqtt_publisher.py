@@ -18,17 +18,23 @@ def get_logger() :
     log.addHandler(handler)                                                                                                                
     return log                                                                                                                             
                                                                                                                                            
-def check_audio():                                                                                                                         
-    file = open('/proc/asound/card2/stream0', 'r')                                                                                         
-    res = file.readlines()                                                                                                                 
-    ret = False                                                                                                                            
-    for line in res :                                                                                                                      
-        if line.find('Status: Running') >= 0:                                                                                              
-            ret = True                                                                                                                     
-            break                                                                                                                          
-    file.close()                                                                                                                           
-    return ret                                                                                                                             
-                                                                                                                                           
+def check_audio():
+    try:
+        with open('/proc/asound/card2/stream0', 'r') as file:
+            res = file.readlines()
+    except Exception as e:
+        # 파일 열기 또는 읽기 과정에서 오류 발생 시 False 반환
+        print(f"Error reading audio status: {e}")
+        return False
+
+    ret = False
+    for line in res:
+        if 'Status: Running' in line:
+            ret = True
+            break
+
+    return ret
+  
 def publish(on) :                                                                                                                          
     broker_address = '192.168.219.200'                                                                                                     
     mqttc = mqtt.Client('moode')                                                                                                           
