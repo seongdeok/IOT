@@ -55,7 +55,7 @@ def publish(on):
     mqttc.publish(topic, state)
     mqttc.disconnect()
 
-def set_power(device, on):
+def set_power(device,on):
     if on:
         device.send_data(ON)
     else:
@@ -92,7 +92,7 @@ while 1:
             if USE_MQTT:
                 publish(True)
             else :
-                set_power(True)
+                set_power(device, True)
         else:
             cnt = 0
             state = False
@@ -100,6 +100,6 @@ while 1:
             if USE_MQTT:
                 publish(False)
             else :
-                set_power(False)
+                set_power(device, False)
     sleep(1)
     logger.debug('state = ' + str(state) + ' cnt = ' + str(cnt))
