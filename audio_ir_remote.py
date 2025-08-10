@@ -70,7 +70,7 @@ cnt = 0
 USE_MQTT = False
 
 if not USE_MQTT:
-    device = broadlink.hello('192.168.219.155')
+    device = broadlink.hello('192.168.219.115')
     device.auth()
 
 
