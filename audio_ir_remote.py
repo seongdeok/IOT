@@ -3,7 +3,7 @@ import paho.mqtt.client as mqtt
 import logging
 import logging.handlers
 import broadlink
-
+import glob
 
 ON = b"&\x00P\x00\x00\x01'\x94\x147\x137\x147\x13\x13\x13\x13\x12\x13\x13\x13\x137\x13\x13\x13\x13\x127\x147\x137\x146\x147\x13\x13\x137\x13\x13\x137\x13\x13\x13\x13\x137\x13\x13\x13\x13\x12\x13\x137\x14\x12\x137\x146\x14\x13\x136\x146\x13\x00\x04\xd6\x00\x01'I\x14\x00\r\x05\x00\x00\x00\x00\x00\x00\x00\x00"
 OFF = b"&\x00P\x00\x00\x01'\x94\x146\x147\x137\x14\x12\x13\x13\x13\x12\x14\x12\x137\x14\x12\x13\x13\x137\x137\x147\x137\x146\x14\x13\x13\x13\x12\x13\x13\x13\x136\x14\x12\x14\x12\x137\x147\x137\x137\x147\x13\x13\x137\x137\x13\x13\x13\x11\x14\x00\x04\xd5\x00\x01'J\x13\x00\r\x05\x00\x00\x00\x00\x00\x00\x00\x00"
@@ -26,10 +26,31 @@ def get_logger():
     handler.setFormatter(formatter)
     log.addHandler(handler)
     return log
+import re
+
+def find_usb_audio_path():
+    try:
+        with open('/proc/asound/cards', 'r') as f:
+            for line in f:
+                if 'USB-Audio' in line:
+                    m = re.match(r'\s*(\d+)', line)
+                    if m:
+                        card = m.group(1)
+                        path = '/proc/asound/card{}/stream0'.format(card)
+                        return path
+        logger.info('USB-Audio card not found')
+    except Exception as e:
+        logger.info('find_usb_audio_path error: ' + str(e))
+    return None
 
 def check_audio():
+    card = find_usb_audio_path()
+
+    if card is None:
+        return False
+
     try:
-        with open('/proc/asound/card0/stream0', 'r') as file:
+        with open(card, 'r') as file:
             res = file.readlines()
     except Exception as e:
         print(f"Error reading audio status: {e}")
@@ -40,8 +61,16 @@ def check_audio():
         if 'Status: Running' in line:
             ret = True
             break
-
     return ret
+def check_all_audio():
+    for path in glob.glob('/proc/asound/card*/stream0'):
+        try:
+            with open(path, 'r') as f:
+                if 'Status: Running' in f.read():
+                    return True
+        except:
+            pass
+    return False
 
 def publish(on):
     broker_address = '192.168.219.200'
